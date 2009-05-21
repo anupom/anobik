@@ -1,0 +1,80 @@
+= Anobik
+
+* http://github.com/anupom/anobik
+
+== DESCRIPTION:
+
+Anobik is a simple rack middleware ruby microframework
+
+== FEATURES/PROBLEMS:
+
+Anobik is a Rack based microframework that provides an easy way to map URL patterns to classes.
+URL patterns can be literal strings or regular expressions.
+when URLs are processed:
+	* the beginning and end are anchored (^ $)
+	* an optional end slash is added (/?)
+	* the i option is added for case-insensitive searches
+	* respective class method is called depending on the request method (GET/POST etc.)
+
+It does not provide any view templating or database handling mechanism.
+you can ofcourse use any opensource view templating engine or database access layer with it.
+Anobik is very similar to web.py, but it is not a direct clone of web.py.
+It is ofcourse highly inspired by web.py and other similar lightweight microframeworks.
+
+Anobik acts as a Rack middleware app and that means you can use it with a
+number of webservers including Thin, LiteSpeed, Phusion Passangeretc.
+And BTW, you can also use it with Rails, Sinatra or any other Rack based frameworks.
+
+== SYNOPSIS:
+
+* routes.rb
+    class Routes
+      BASE = ''
+      URLS = {
+        "/" => "index",
+        "/index/(\\d+)" => "index",
+      }
+    end
+
+* index.rb
+    class Index
+      def self.GET (id=nil)
+        "Hello world from web.rb! #{id}"
+      end
+    end
+
+* url
+    GET /index/1
+
+== REQUIREMENTS:
+
+Ruby 1.9 and Rack are the pre-requisites
+
+== INSTALL:
+
+    sudo gem install anobik
+
+== LICENSE:
+
+(The MIT License)
+
+Copyright (c) 2009 syamantics.com
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+'Software'), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
