@@ -2,7 +2,7 @@ require 'rubygems'
 require 'rake'
 require 'echoe'
 
-Echoe.new('anobik', '0.0.1') do |p|
+Echoe.new('anobik', '0.0.2') do |p|
   p.description    = "Rack middleware Ruby micro-framework"
   p.url            = "http://github.com/anupom/anobik"
   p.author         = "Anupom Syam"
