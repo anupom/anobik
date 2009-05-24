@@ -7,9 +7,9 @@ Echoe.new('anobik', '0.0.1') do |p|
   p.url            = "http://github.com/anupom/anobik"
   p.author         = "Anupom Syam"
   p.email          = "anupom.syam@gmail.com"
-  p.ignore_pattern = ["nbproject/*", "nbproject/private/*", "tmp/*"]
+  p.ignore_pattern = ["nbproject", "tmp"]
   p.development_dependencies = []
-  p.runtime_dependencies = ['rack >= 0.9.1']
+  p.runtime_dependencies = ['rack']
 end
 
 Dir["#{File.dirname(__FILE__)}/tasks/*.rake"].sort.each 

@@ -55,11 +55,10 @@ class AnobikServer
       use Rack::ShowExceptions
       use Rack::ShowStatus
       use Rack::Static, :urls => ['/statics']
-      use Rack::Anobik, :urls => ['/'],  :production => options[:production]
+      use Rack::Anobik, :url => '/',  :production => options[:production]
 
       run lambda { |env|
-          [Rack::Utils::HTTP_STATUS_CODES['OK'],
-         {'Content-Type' => 'text/plain'}, 'Not a Anobik Request :)']
+          [404, {'Content-Type' => 'text/plain'}, 'Not a Anobik Request :)']
        }
     }.to_app
 

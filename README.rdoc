@@ -29,7 +29,6 @@ And BTW, you can also use it with Rails, Sinatra or any other Rack based framewo
 
 * routes.rb
     class Routes
-      BASE = ''
       URLS = {
         "/" => "index",
         "/index/(\\d+)" => "index",
@@ -38,8 +37,8 @@ And BTW, you can also use it with Rails, Sinatra or any other Rack based framewo
 
 * index.rb
     class Index
-      def self.GET (id=nil)
-        "Hello world from web.rb! #{id}"
+      def get(id=nil)
+        "Hello world from anobik! #{id}"
       end
     end
 
