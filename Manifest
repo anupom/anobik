@@ -1,0 +1,8 @@
+test/spec_rack_anobik.rb
+Rakefile
+CHANGELOG.txt
+lib/anobik.rb
+lib/rack/anobik.rb
+anobik-server
+Manifest
+README.rdoc
