@@ -22,7 +22,7 @@ Anobik is very similar to web.py, but it is not a direct clone of web.py.
 It is ofcourse highly inspired by web.py and other similar lightweight microframeworks.
 
 Anobik acts as a Rack middleware app and that means you can use it with a
-number of webservers including Thin, LiteSpeed, Phusion Passangeretc.
+number of webservers including Thin, LiteSpeed, Phusion Passanger etc.
 And BTW, you can also use it with Rails, Sinatra or any other Rack based frameworks.
 
 == SYNOPSIS:
@@ -42,6 +42,9 @@ And BTW, you can also use it with Rails, Sinatra or any other Rack based framewo
       end
     end
 
+* command
+  $ anobik-server
+
 * url
     GET /index/1
 
@@ -51,7 +54,8 @@ Ruby 1.9 and Rack are the pre-requisites
 
 == INSTALL:
 
-    sudo gem install anobik
+    gem sources -a http://gems.github.com
+    sudo gem install anupom-anobik
 
 == LICENSE:
 
