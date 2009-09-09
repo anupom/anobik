@@ -1,0 +1,5 @@
+#!/usr/bin/env ruby
+#$ ruby -rubygems server
+ANOBIK_ROOT = "#{File.dirname(File.expand_path(__FILE__))}/" unless defined?(ANOBIK_ROOT)
+require 'anobik/server'
+Anobik::Server::run
