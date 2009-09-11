@@ -1,3 +1,5 @@
+require 'anobik/consts'
+
 module Rack
 #
 # Anobik is a Rack based microframework that provides an easy way to map URL patterns to classes.
@@ -8,34 +10,48 @@ module Rack
 # 	* the i option is added for case-insensitive searches
 # 	* respective class method is called depending on the request method (GET/POST etc.)
 #
-# It does not provide any view templating or database handling mechanism.
-# you can ofcourse use any opensource view templating engine or database access layer with it.
-# Anobik is very similar to web.py, but it is not a direct clone of web.py.
-# It is ofcourse highly inspired by web.py and other similar lightweight microframeworks.
+# Anobik does not provide any database handling mechanism yet.
+# You can ofcourse use any opensource database access layer with it - it's pretty flexible.
+# Anobik is suitable for small micro-sites where you would love to use your
+# favorite programming language but Rails is a bit heavy for that.
 #
 # Anobik acts as a Rack middleware app and that means you can use it with a
 # number of webservers including Thin, LiteSpeed, Phusion Passangeretc.
-# And BTW, you can also use it with Rails, Sinatra or any other Rack based frameworks.
+# And the best part is, you can also use it with Rails, Sinatra or any other Rack based frameworks.
+#
+# Anobik is truely feather-weight. It has < 250 LOC!
+# It does not have many features but it can get you started early.
+# More docs coming soon, stay tuuneed!
 #
 # e.g:
 #
-# * routes.rb
+# * configs/routes.rb
 # class Routes
 #   URLS = {
 #     "/" => "index",
-#     "/index/(\\d+)" => "index",
+#     "/page/(\\d+)" => "page",
 #   }
 # end
 #
-# * index.rb
-# class Index
-#   def get (id=nil)
-#     "Hello world from web.rb! #{id}"
+# * resources/index.rb
+# class Index < Anobik::Resource
+#   def get
+#     @hello = "Hello"
+#     render 'index', {:world => 'world'}
 #   end
 # end
 #
+# * faces/index.erb
+# <%= [@hello, @world].join(' ') %>
+#
+# * command
+# $ ruby -rubygems server
+# OR
+# $ rackup config.ru
+#
 # * url
 # GET /index/1
+# 
 #
 # MIT-License - Anupom Syam
 #
@@ -50,7 +66,6 @@ module Rack
       :missing_routes_class   => "Class %s is missing in routes file %s.rb"
     }
     STATUSES = { :ok => 200, :bad_request => 404}
-    ROUTES_FILENAME = 'routes'
     
     def initialize app, options
       @app = app
@@ -63,7 +78,7 @@ module Rack
     def call env
       req = Rack::Request.new(env)
       path = req.path_info
-      method = req.request_method
+      method = req.request_method.downcase
 
       @headers = { 'Content-Type' => 'text/html' }
 
@@ -73,16 +88,19 @@ module Rack
       end
 
       begin
-        anobik_load ROUTES_FILENAME
+        anobik_load_config ::Anobik::ROUTES_FILE
       rescue Exception
-        return anobik_error(:missing_routes_file, [ROUTES_FILENAME, ANOBIK_ROOT])
+        return anobik_error(:missing_routes_file, [::Anobik::ROUTES_FILE, 
+                                        ANOBIK_ROOT + ::Anobik::CONFIG_DIR])
       end
       
-      routes_classname = to_class_name ROUTES_FILENAME
+      routes_classname = to_class_name ::Anobik::ROUTES_FILE
       begin
         raise NameError unless Object.const_get(routes_classname).kind_of? Class
-     rescue Exception
-        return anobik_error(:missing_routes_class, [routes_classname, ANOBIK_ROOT+ROUTES_FILENAME])
+      rescue Exception
+        return anobik_error(:missing_routes_class,
+          [routes_classname, ANOBIK_ROOT + ::Anobik::CONFIG_DIR +
+                                                ::Anobik::ROUTES_FILE])
       end
       
       begin
@@ -91,39 +109,41 @@ module Rack
       rescue Exception
         urls = {  "/" => "index" }
       end
-      controller_filename = nil
+      resource_filename = nil
       matches = nil
       urls.each do |regex, filename|
         matches = path.match(Regexp.new('^' << @url << regex << '/?$', true))
         unless  matches.nil?
-          controller_filename = filename
+          resource_filename = filename
           break
         end
       end
 
-      if controller_filename.nil?
+      if resource_filename.nil?
         return anobik_error(:invalid_path, [path])
       end
 
       begin
-        anobik_load controller_filename
+        anobik_load_resource resource_filename
       rescue Exception
-        return anobik_error(:missing_file, [controller_filename, ANOBIK_ROOT])
+        return anobik_error(:missing_file, [resource_filename, ANOBIK_ROOT +
+                                                  ::Anobik::RESOURCE_DIR])
       end
 
-      controller_classname = to_class_name controller_filename
+      resource_classname = to_class_name resource_filename
       begin
-        raise NameError unless Object.const_get(controller_classname).kind_of? Class
+        raise NameError unless Object.const_get(resource_classname).kind_of? Class
       rescue Exception
-        return anobik_error(:missing_class, [controller_classname, ANOBIK_ROOT+controller_filename])
+        return anobik_error(:missing_class, [resource_classname, ANOBIK_ROOT +
+                                ::Anobik::RESOURCE_DIR + resource_filename])
       end
 
-      controller = Object.const_get(controller_classname).new
-      unless controller.respond_to?(method)
-        return anobik_error(:missing_method, [controller_classname, method])
+      resource = Object.const_get(resource_classname).new(){env}
+      unless resource.respond_to?(method)
+        return anobik_error(:missing_method, [resource_classname, method])
       end
 
-      body = eval 'controller.' << method <<
+      body = eval 'resource.' << method <<
                         '(' << matches.captures.join(' , ') << ')'
 
       [STATUSES[:ok], @headers, body]
@@ -141,18 +161,26 @@ module Rack
       return [STATUSES[:bad_request], @headers, '']
     end
 
-    def anobik_root
-      ANOBIK_ROOT
+    def anobik_load_config filename
+      anobik_load ::Anobik::CONFIG_DIR, filename
     end
 
-    def anobik_load filename
+    def anobik_load_resource filename
+      anobik_load ::Anobik::RESOURCE_DIR, filename
+    end
+
+    def anobik_load dirname, filename
       if (@production)
-        require filename
+        require dirname + filename
       else
         classname = to_class_name(filename).to_sym
         Object.class_eval { remove_const classname } if Object.const_defined? classname
-        Kernel.load filename + '.rb'
+        Kernel.load dirname + filename + '.rb'
       end
+    end
+
+    def anobik_root
+      ANOBIK_ROOT
     end
     
   end

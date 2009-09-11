@@ -2,15 +2,17 @@
 
 Gem::Specification.new do |s|
   s.name = %q{anobik}
-  s.version = "0.0.2"
+  s.version = "0.0.3"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 1.2") if s.respond_to? :required_rubygems_version=
   s.authors = ["Anupom Syam"]
-  s.date = %q{2009-05-24}
+  s.date = %q{2009-09-10}
   s.description = %q{Rack middleware Ruby micro-framework}
   s.email = %q{anupom.syam@gmail.com}
-  s.extra_rdoc_files = ["CHANGELOG.txt", "lib/anobik.rb", "lib/rack/anobik.rb", "README.rdoc"]
-  s.files = ["test/spec_rack_anobik.rb", "Rakefile", "CHANGELOG.txt", "lib/anobik.rb", "lib/rack/anobik.rb", "anobik-server", "Manifest", "README.rdoc", "anobik.gemspec"]
+  s.extra_rdoc_files = ["CHANGELOG.txt", "lib/anobik/server.rb", "lib/anobik/app.rb", "lib/rack/anobik.rb", "README.rdoc"]
+  s.files = ["test/spec_rack_anobik.rb", "Rakefile", "CHANGELOG.txt", "lib/anobik/server.rb", "lib/anobik/app.rb",
+            "lib/anobik/consts.rb", "lib/anobik/utils.rb", "lib/rack/anobik.rb", "server",
+            "config.ru", "Manifest", "README.rdoc", "anobik.gemspec"]
   s.has_rdoc = true
   s.homepage = %q{http://github.com/anupom/anobik}
   s.rdoc_options = ["--line-numbers", "--inline-source", "--title", "Anobik", "--main", "README.rdoc"]

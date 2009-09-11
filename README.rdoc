@@ -7,46 +7,55 @@
 Anobik is a simple rack middleware ruby microframework
 
 == FEATURES/PROBLEMS:
-
 Anobik is a Rack based microframework that provides an easy way to map URL patterns to classes.
 URL patterns can be literal strings or regular expressions.
 when URLs are processed:
-	* the beginning and end are anchored (^ $)
-	* an optional end slash is added (/?)
-	* the i option is added for case-insensitive searches
-	* respective class method is called depending on the request method (GET/POST etc.)
+ 	* the beginning and end are anchored (^ $)
+ 	* an optional end slash is added (/?)
+ 	* the i option is added for case-insensitive searches
+ 	* respective class method is called depending on the request method (GET/POST etc.)
 
-It does not provide any view templating or database handling mechanism.
-you can ofcourse use any opensource view templating engine or database access layer with it.
-Anobik is very similar to web.py, but it is not a direct clone of web.py.
-It is ofcourse highly inspired by web.py and other similar lightweight microframeworks.
+Anobik does not provide any database handling mechanism yet.
+You can ofcourse use any opensource database access layer with it - it's pretty flexible.
+Anobik is suitable for small micro-sites where you would love to use your
+favorite programming language but Rails is a bit heavy for that.
 
 Anobik acts as a Rack middleware app and that means you can use it with a
-number of webservers including Thin, LiteSpeed, Phusion Passanger etc.
-And BTW, you can also use it with Rails, Sinatra or any other Rack based frameworks.
+number of webservers including Thin, LiteSpeed, Phusion Passangeretc.
+And the best part is, you can also use it with Rails, Sinatra or any other Rack based frameworks.
+
+Anobik is truely feather-weight. It has < 250 LOC!
+It does not have many features but it can get you started early.
+More docs and more changes are coming soon, stay tuuneed!
 
 == SYNOPSIS:
 
-* routes.rb
-    class Routes
-      URLS = {
-        "/" => "index",
-        "/index/(\\d+)" => "index",
-      }
-    end
+* configs/routes.rb
+ class Routes
+   URLS = {
+     "/" => "index",
+     "/page/(\\d+)" => "page",
+   }
+ end
 
-* index.rb
-    class Index
-      def get(id=nil)
-        "Hello world from anobik! #{id}"
-      end
-    end
+* resources/index.rb
+ class Index < Anobik::Resource
+   def get
+     @hello = "Hello"
+     render 'index', {:world => 'world'}
+   end
+ end
+
+* faces/index.erb
+ <%= [@hello, @world].join(' ') %>
 
 * command
-  $ anobik-server
+ $ ruby -rubygems server
+ OR
+ $ rackup config.ru
 
 * url
-    GET /index/1
+ GET /index/1
 
 == REQUIREMENTS:
 

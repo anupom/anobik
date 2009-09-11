@@ -1,7 +1,6 @@
 require 'anobik/consts'
 
 #TODO make @request/@response $request/$response?
-
 module Anobik
   class Resource
     def initialize

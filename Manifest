@@ -2,7 +2,10 @@ test/spec_rack_anobik.rb
 Rakefile
 CHANGELOG.txt
 lib/anobik.rb
+lib/anobik_server.rb
+lib/anobik_app.rb
 lib/rack/anobik.rb
-anobik-server
+server
+config.ru
 Manifest
 README.rdoc
