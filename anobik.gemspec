@@ -2,11 +2,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{anobik}
-  s.version = "0.0.3"
+  s.version = "0.0.4"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 1.2") if s.respond_to? :required_rubygems_version=
   s.authors = ["Anupom Syam"]
-  s.date = %q{2009-09-21}
+  s.date = %q{2009-09-22}
   s.description = %q{Rack middleware Ruby micro-framework}
   s.email = %q{anupom.syam@gmail.com}
   s.extra_rdoc_files = ["lib/anobik/app.rb", "lib/anobik/consts.rb", "lib/anobik/server.rb", "lib/anobik/utils.rb", "lib/rack/anobik.rb", "CHANGELOG.txt", "README.rdoc"]
