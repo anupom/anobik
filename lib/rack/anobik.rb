@@ -89,9 +89,8 @@ module Rack
 
       begin
         anobik_load_config ::Anobik::ROUTES_FILE
-      rescue Exception
-        return anobik_error(:missing_routes_file, [::Anobik::ROUTES_FILE, 
-                                        ANOBIK_ROOT + ::Anobik::CONFIG_DIR])
+      rescue LoadError => msg
+        return system_error msg
       end
       
       routes_classname = to_class_name ::Anobik::ROUTES_FILE
@@ -125,9 +124,8 @@ module Rack
 
       begin
         anobik_load_resource resource_filename
-      rescue Exception
-        return anobik_error(:missing_file, [resource_filename, ANOBIK_ROOT +
-                                                  ::Anobik::RESOURCE_DIR])
+      rescue LoadError => msg
+        return system_error msg
       end
 
       resource_classname = to_class_name resource_filename
@@ -155,10 +153,17 @@ module Rack
     end
 
     def anobik_error(err, array = [])
-      #will be handled by RACK::ShowExceptions
       raise ERR_MESSAGES[err] % array unless @production
-      #will be handled by RACK::ShowStatus
-      return [STATUSES[:bad_request], @headers, '']
+      return bad_request
+    end
+
+    def system_error msg
+      raise msg unless @production
+      return bad_request
+    end
+
+    def bad_request
+      [STATUSES[:bad_request], @headers, '']
     end
 
     def anobik_load_config filename

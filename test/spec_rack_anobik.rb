@@ -58,7 +58,7 @@ describe "Rack::Anobik" do
   it "should return 500 when routes.rb is not present with dev" do
     remove_routes_file
     response = anobik_app_dev.get('/')
-    response.should equal_response({:status => 500, :body => 'routes.rb ' << 'is not present in directory'})
+    response.should equal_response({:status => 500, :body => 'no such file to ' << 'load'})
   end
 
   it "should return 404 when Routes class is not defined with production" do
@@ -101,7 +101,7 @@ describe "Rack::Anobik" do
     remove_resource_file 'index'
     create_routes_file "class Routes\nend"
     response = anobik_app_dev.get('/')
-    response.should equal_response({:status => 500, :body => 'missing ' << 'in directory'})
+    response.should equal_response({:status => 500, :body => 'no such file to ' << 'load'})
     remove_routes_file
   end
 
